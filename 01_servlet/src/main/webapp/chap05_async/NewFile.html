@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script>
+        //----- 본문을 다 읽은 뒤에 처리하는 이벤트 : load
+
+        onload = function (e) {
+
+            const btnJson = document.getElementById('btn-json');
+            btnJson.addEventListener("click", (e) => {
+                fetch("/servlet_war_exploded/JsonResponse", {method: "get"})
+                    .then(response => response.json())
+                    .then(json => {
+                        // JSON 데이터를 바로 div에 출력
+                        const div = document.getElementById("div-json");
+                        div.innerHTML = `
+                        <ul>
+                            <li><strong>제목:</strong> ${json.title}</li>
+                            <li><strong>평점:</strong> ${json.scores}</li>
+                            <li><strong>감독:</strong> ${json.info.director}</li>
+                            <li><strong>장르:</strong> ${json.info.genre}</li>
+                            <li><strong>출연:</strong> ${json.actors.join(", ")}</li>
+                        </ul>
+                    `;
+                    });
+
+            });
+
+            const btnXml = document.getElementById("btn-xml");
+            btnXml.addEventListener("click", (e)=>{
+                fetch('/servlet_war_exploded/XmlResponse')
+                    .then(response => response.text())
+                    .then(xml => {
+                        // 문자열로 반환된 xml 데이터를 XML Document로 수정하기
+                        const xmlDoc = new DOMParser().parseFromString(xml, "application/xhtml+xml");
+                        console.log(xmlDoc);
+                        const weather = xmlDoc.getElementsByTagName("weather")[0];
+                        let tbody = `<tr><td colspan="3">${weather.getAttribute('year')}${weather.getAttribute('month')}${weather.getAttribute('day')}${weather.getAttribute('hour')}시</td>`;
+                        const locals = xmlDoc.getElementsByTagName("local");
+                        for (let i = 0; i < locals.length; i++) {
+                            tbody += "<tr>"
+                            tbody += `<td>${locals[i].textContent}</td>`;
+                            tbody += `<td>${locals[i].getAttribute('ta')}</td>`;
+                            tbody += `<td>${locals[i].getAttribute('desc')}</td>`;
+                            tbody += "</tr>"
+                        }
+                        document.getElementById("weather").innerHTML = tbody;
+                    })
+
+            })
+        }
+
+    </script>
+</head>
+<body>
+    <button type="button" id="btn-json"> 비동기 요청(JSON)</button>
+    <div id = "div-json">여기에 JSON 데이터가 나타납니다.</div>
+    <hr>
+
+    <button type="button" id="btn-xml">비동기 요청(XML)</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>지역명</th>
+                <th>온도</th>
+                <th>날씨</th>
+            </tr>
+        </thead>
+        <tbody id="weather">
+        </tbody>
+    </table>
+
+</body>
+</html>
