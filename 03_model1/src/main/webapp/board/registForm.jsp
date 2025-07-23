@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="model.UserDTO" %>
 <%@ page import="dao.UserDAO" %><%--
+
   Created by IntelliJ IDEA.
   User: GDJ018
   Date: 2025-07-22
@@ -18,7 +19,7 @@
 
 <%
   List<UserDTO> users = UserDAO.getInstance().getUsers();
-  pageContext.setAttribute("users", users);
+  request.setAttribute("users", users);
 %>
 
 <h1> 신규 게시글 등록 화면</h1>

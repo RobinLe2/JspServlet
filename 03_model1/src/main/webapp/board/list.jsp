@@ -10,8 +10,7 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
+
 <br/>
 
 
@@ -41,6 +40,7 @@
             <tr>
                 <td>${board.bid}</td>
                 <td>${board.user.uid}</td>
+                <td><a href="${contextPath}/board/detail.jsp?bid=${board.bid}">${board.title}</a></td>
                 <td>${board.title}</td>
                 <td>${board.createdAt}</td>
             </tr>
